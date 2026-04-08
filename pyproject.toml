@@ -22,11 +22,6 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
 ]
-
-[project.urls]
-Homepage = "https://github.com/your-username/crowdsafe-openenv"
-Documentation = "https://github.com/your-username/crowdsafe-openenv#readme"
-
 dependencies = [
     "fastapi>=0.104.0",
     "uvicorn>=0.24.0",
@@ -38,6 +33,10 @@ dependencies = [
 
 [project.scripts]
 server = "server.app:main"
+
+[project.urls]
+Homepage = "https://github.com/your-username/crowdsafe-openenv"
+Documentation = "https://github.com/your-username/crowdsafe-openenv#readme"
 
 [tool.setuptools.packages.find]
 where = ["."]
