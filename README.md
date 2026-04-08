@@ -2,7 +2,7 @@
 title: CrowdSafeEnv
 emoji: 🚨
 colorFrom: red
-colorTo: orange
+colorTo: blue
 sdk: docker
 pinned: false
 tags:
@@ -26,17 +26,19 @@ The agent plays the role of a real-time crowd safety coordinator at a large outd
 ## Environment Description
 
 A 12×16 grid simulates a stadium venue. Each cell tracks:
+
 - **Density** (people/m²): safe < 4.0, danger 4.0–6.0, crush ≥ 6.0, stampede ≥ 9.0
 - **Velocity field**: crowd movement direction and speed
 
 The agent manages:
-| Resource | Count | Description |
-|---|---|---|
-| Gates | 6 | Entry/exit flow control |
-| Barriers | 2 | Internal crowd channeling |
-| Marshals | 6 | Deployable personnel reducing local density |
-| Emergency exits | 3 | High-capacity emergency egress |
-| PA broadcasts | 5/episode | Calming announcements reducing density |
+
+| Resource        | Count     | Description                                 |
+| --------------- | --------- | ------------------------------------------- |
+| Gates           | 6         | Entry/exit flow control                     |
+| Barriers        | 2         | Internal crowd channeling                   |
+| Marshals        | 6         | Deployable personnel reducing local density |
+| Emergency exits | 3         | High-capacity emergency egress              |
+| PA broadcasts   | 5/episode | Calming announcements reducing density      |
 
 ---
 
@@ -72,11 +74,13 @@ class Action(BaseModel):
 ## Tasks
 
 ### Task 1 — Gate Routing (Easy) `task_01_gate_routing`
+
 **Scenario:** Festival gates are opening. Arriving crowds form at the bottom of the grid. Open the correct gates before density spikes.
 
 **Objective:** Keep all zones below 4.0 p/m² for 100 steps.
 
 **Grader (0.0–1.0):**
+
 - 60% — fraction of steps with no zone exceeding safe density
 - 20% — max density stayed below 5.0 p/m²
 - 20% — at least 3 gates opened within first 10 steps
@@ -86,11 +90,13 @@ class Action(BaseModel):
 ---
 
 ### Task 2 — Surge Response (Medium) `task_02_surge_response`
+
 **Scenario:** A speaker malfunction at step 20 triggers a crowd surge from stage-left. Dense crowd appears in rows 0–3, cols 0–5.
 
 **Objective:** Contain the surge within 50 steps. Deploy marshals, open emergency exits.
 
 **Grader (0.0–1.0):**
+
 - 40% — surge contained (max density < 5.0) within 50 steps of incident
 - 25% — ≥2 marshals deployed within 30 steps of surge
 - 20% — emergency exit exit_L or exit_M opened
@@ -101,11 +107,13 @@ class Action(BaseModel):
 ---
 
 ### Task 3 — Cascade Prevention (Hard) `task_03_cascade_prevention`
+
 **Scenario:** Three simultaneous incidents at step 10–15: exit bottleneck (right side), stage surge (left), and medical panic (center). 200 steps, limited resources.
 
 **Objective:** Prevent any zone reaching crush density (6.0 p/m²) across all three incidents.
 
 **Grader (0.0–1.0):**
+
 - 35% — no zone ever reaches crush density (−0.15 per zone crushed)
 - 25% — early decisive action (gate + marshal ops) within first 25 steps
 - 20% — ≥4 marshals deployed across zones
@@ -120,15 +128,15 @@ class Action(BaseModel):
 
 Dense per-step reward (fires every timestep — not just terminal):
 
-| Component | Value | Condition |
-|---|---|---|
-| Density penalty | −0.5 × crush_zones | Per step, per zone ≥ 6.0 p/m² |
-| Flow reward | +0.10 × safe_ratio | Fraction of cells below 4.0 p/m² |
-| Improvement bonus | +0.05 | If max density improved and no crush zones |
-| Crush penalty | −1.0 | Any zone at crush density |
-| Stampede penalty | −5.0 | Episode-ending event |
-| Efficiency bonus | +0.15 | Max density < 4.0 p/m² |
-| Resource penalty | −0.05 | Unnecessary marshal moves |
+| Component         | Value                | Condition                                  |
+| ----------------- | -------------------- | ------------------------------------------ |
+| Density penalty   | −0.5 × crush_zones | Per step, per zone ≥ 6.0 p/m²            |
+| Flow reward       | +0.10 × safe_ratio  | Fraction of cells below 4.0 p/m²          |
+| Improvement bonus | +0.05                | If max density improved and no crush zones |
+| Crush penalty     | −1.0                | Any zone at crush density                  |
+| Stampede penalty  | −5.0                | Episode-ending event                       |
+| Efficiency bonus  | +0.15                | Max density < 4.0 p/m²                    |
+| Resource penalty  | −0.05               | Unnecessary marshal moves                  |
 
 Range: `[−10.0, 1.0]` per step.
 
@@ -208,11 +216,11 @@ state = httpx.get(f"{BASE}/state").json()
 
 ## Environment Variables
 
-| Variable | Description |
-|---|---|
-| `HF_TOKEN` | **Required.** Your OpenRouter or Groq API key |
-| `API_BASE_URL` | Provider endpoint (see below) |
-| `MODEL_NAME` | Model identifier (see below) |
+| Variable         | Description                                         |
+| ---------------- | --------------------------------------------------- |
+| `HF_TOKEN`     | **Required.** Your OpenRouter or Groq API key |
+| `API_BASE_URL` | Provider endpoint (see below)                       |
+| `MODEL_NAME`   | Model identifier (see below)                        |
 
 ### OpenRouter (default — free tier available)
 
@@ -238,12 +246,12 @@ export MODEL_NAME="llama-3.1-8b-instant"
 
 Run with `gpt-4o-mini` (seed=42):
 
-| Task | Difficulty | Score |
-|---|---|---|
-| Gate Routing | Easy | ~0.55 |
-| Surge Response | Medium | ~0.35 |
-| Cascade Prevention | Hard | ~0.20 |
-| **Average** | | **~0.37** |
+| Task               | Difficulty | Score           |
+| ------------------ | ---------- | --------------- |
+| Gate Routing       | Easy       | ~0.55           |
+| Surge Response     | Medium     | ~0.35           |
+| Cascade Prevention | Hard       | ~0.20           |
+| **Average**  |            | **~0.37** |
 
 ---
 
