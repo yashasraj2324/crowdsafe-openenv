@@ -37,7 +37,7 @@ _env = CrowdSafeEnv()
 
 class ResetRequest(BaseModel):
     task_id: Optional[str] = "task_01_gate_routing"
-    seed: int = 42
+    seed: Optional[int] = 42
 
 
 class StepRequest(BaseModel):
@@ -55,7 +55,9 @@ def list_tasks():
 
 
 @app.post("/reset", response_model=Observation)
-def reset(req: ResetRequest):
+def reset(req: Optional[ResetRequest] = None):
+    if req is None:
+        req = ResetRequest()
     obs = _env.reset(task_id=req.task_id, seed=req.seed)
     return obs
 
