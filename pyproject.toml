@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "crowdsafe-openenv"
+version = "1.0.0"
+description = "Crowd safety simulation environment for OpenEval"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "CrowdSafe Team"}
+]
+keywords = ["crowd-safety", "simulation", "openenv", "reinforcement-learning"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+
+[project.urls]
+Homepage = "https://github.com/your-username/crowdsafe-openenv"
+Documentation = "https://github.com/your-username/crowdsafe-openenv#readme"
+
+[project.scripts]
+crowdsafe-openenv = "app.server:app"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.yaml", "*.yml"]
+
+[tool.black]
+line-length = 100
+target-version = ['py38']
+skip-string-normalization = true
+
+[tool.isort]
+profile = "black"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = ["-v"]
