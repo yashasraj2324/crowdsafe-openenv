@@ -27,12 +27,21 @@ classifiers = [
 Homepage = "https://github.com/your-username/crowdsafe-openenv"
 Documentation = "https://github.com/your-username/crowdsafe-openenv#readme"
 
+dependencies = [
+    "fastapi>=0.104.0",
+    "uvicorn>=0.24.0",
+    "pydantic>=2.0.0",
+    "httpx>=0.25.0",
+    "numpy>=1.24.0",
+    "openenv-core>=0.2.0",
+]
+
 [project.scripts]
-crowdsafe-openenv = "app.server:app"
+server = "server.app:run"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["app*"]
+include = ["app*", "server*"]
 
 [tool.setuptools.package-data]
 "*" = ["*.yaml", "*.yml"]
