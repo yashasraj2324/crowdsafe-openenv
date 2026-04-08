@@ -1,7 +1,7 @@
 import uvicorn
 
 
-def run():
+def main():
     uvicorn.run(
         "app.server:app",
         host="0.0.0.0",
@@ -11,4 +11,4 @@ def run():
 
 
 if __name__ == "__main__":
-    run()
+    main()
