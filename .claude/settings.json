@@ -1,0 +1,9 @@
+{
+    "env": {
+        "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+        "ANTHROPIC_BASE_URL": "https://openrouter.ai/api",
+        "ANTHROPIC_AUTH_TOKEN": "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",
+        "ANTHROPIC_API_KEY": "",
+        "ANTHROPIC_MODEL": "nvidia/nemotron-3-super-120b-a12b:free"
+    }
+}

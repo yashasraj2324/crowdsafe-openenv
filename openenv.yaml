@@ -1,0 +1,108 @@
+name: crowdsafe-openenv
+version: "1.0.0"
+description: >
+  CrowdSafeEnv simulates a mass-gathering crowd safety command post.
+  The agent acts as a real-time safety coordinator at a large outdoor venue,
+  receiving sensor data (density grids, velocity fields, risk scores) and
+  issuing commands (gate operations, marshal deployments, PA broadcasts,
+  barrier changes) to prevent crowd crush and stampedes.
+author: CrowdSafe Team
+tags:
+  - openenv
+  - crowd-safety
+  - real-world
+  - emergency-management
+  - multi-objective
+
+environment:
+  class: CrowdSafeEnv
+  module: app.env
+  entry_point: app.env:CrowdSafeEnv
+
+observation_space:
+  type: object
+  description: Sensor snapshot of the venue at current timestep
+  properties:
+    timestep:
+      type: integer
+    density_grid:
+      type: array
+      description: 2D grid of people per square metre (NxM floats)
+    velocity_field:
+      type: array
+      description: 2D grid of crowd velocity vectors [vx, vy] in m/s
+    gate_states:
+      type: object
+      description: Map of gate_id to boolean open/closed
+    marshal_positions:
+      type: array
+      description: List of [x, y] positions for deployed marshals
+    risk_scores:
+      type: object
+      description: Map of zone_id to risk score 0.0-1.0
+    active_incidents:
+      type: array
+    time_remaining:
+      type: integer
+    pa_broadcasts_remaining:
+      type: integer
+    task_id:
+      type: string
+
+action_space:
+  type: object
+  properties:
+    gate_operations:
+      type: object
+      description: Map of gate_id to desired state (true=open, false=close)
+    marshal_deployments:
+      type: array
+      description: List of [marshal_id, x, y]
+    pa_broadcast:
+      type: string
+      nullable: true
+    barrier_changes:
+      type: object
+    emergency_exit_opens:
+      type: array
+
+reward_space:
+  type: number
+  minimum: -10.0
+  maximum: 1.0
+
+tasks:
+  - id: task_01_gate_routing
+    name: Gate Routing
+    difficulty: easy
+    max_steps: 100
+    grader: app.tasks:GateRoutingGrader
+
+  - id: task_02_surge_response
+    name: Surge Response
+    difficulty: medium
+    max_steps: 150
+    grader: app.tasks:SurgeResponseGrader
+
+  - id: task_03_cascade_prevention
+    name: Cascade Prevention
+    difficulty: hard
+    max_steps: 200
+    grader: app.tasks:CascadePreventionGrader
+
+endpoints:
+  reset:
+    path: /reset
+    method: POST
+  step:
+    path: /step
+    method: POST
+  state:
+    path: /state
+    method: GET
+  tasks:
+    path: /tasks
+    method: GET
+  health:
+    path: /health
+    method: GET
