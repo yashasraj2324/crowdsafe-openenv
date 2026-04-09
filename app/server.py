@@ -53,7 +53,7 @@ def health():
 
 @app.get("/tasks")
 def list_tasks():
-    return {"tasks": _env.get_tasks()}
+    return {"tasks": _env.get_tasks(), "graders": list(GRADERS.keys())}
 
 
 @app.get("/graders")

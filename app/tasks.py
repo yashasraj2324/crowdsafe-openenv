@@ -48,6 +48,10 @@ class GateRoutingGrader:
     MAX_STEPS = 100
 
     @staticmethod
+    def score(record: EpisodeRecord) -> float:
+        return GateRoutingGrader.grade(record)
+
+    @staticmethod
     def grade(record: EpisodeRecord) -> float:
         if record.total_steps == 0:
             return 0.0
@@ -92,6 +96,10 @@ class SurgeResponseGrader:
     TASK_ID = "task_02_surge_response"
     MAX_STEPS = 150
     SURGE_STEP = 20
+
+    @staticmethod
+    def score(record: EpisodeRecord) -> float:
+        return SurgeResponseGrader.grade(record)
 
     @staticmethod
     def grade(record: EpisodeRecord) -> float:
@@ -155,6 +163,10 @@ class CascadePreventionGrader:
     MAX_STEPS = 200
 
     @staticmethod
+    def score(record: EpisodeRecord) -> float:
+        return CascadePreventionGrader.grade(record)
+
+    @staticmethod
     def grade(record: EpisodeRecord) -> float:
         if record.total_steps == 0:
             return 0.0
@@ -210,6 +222,8 @@ TASK_METADATA = [
         "id": "task_01_gate_routing",
         "name": "Gate Routing",
         "difficulty": "easy",
+        "grader": "GateRoutingGrader",
+        "has_grader": True,
         "description": (
             "Manage gate opening/closing to prevent any sector exceeding safe "
             "density (4.0 p/m²) during venue fill-up. Single zone, no dynamic surge. "
@@ -221,6 +235,8 @@ TASK_METADATA = [
         "id": "task_02_surge_response",
         "name": "Surge Response",
         "difficulty": "medium",
+        "grader": "SurgeResponseGrader",
+        "has_grader": True,
         "description": (
             "A speaker malfunction causes a crowd surge from stage-left at step 20. "
             "Redirect crowd flow via barriers, deploy marshals to high-density sectors, "
@@ -232,6 +248,8 @@ TASK_METADATA = [
         "id": "task_03_cascade_prevention",
         "name": "Cascade Prevention",
         "difficulty": "hard",
+        "grader": "CascadePreventionGrader",
+        "has_grader": True,
         "description": (
             "Three simultaneous incidents: exit bottleneck, stage surge, and medical panic. "
             "Allocate limited marshals and PA broadcasts across all zones. "
