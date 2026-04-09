@@ -77,18 +77,21 @@ tasks:
     difficulty: easy
     max_steps: 100
     grader: app.tasks:GateRoutingGrader
+    has_grader: true
 
   - id: task_02_surge_response
     name: Surge Response
     difficulty: medium
     max_steps: 150
     grader: app.tasks:SurgeResponseGrader
+    has_grader: true
 
   - id: task_03_cascade_prevention
     name: Cascade Prevention
     difficulty: hard
     max_steps: 200
     grader: app.tasks:CascadePreventionGrader
+    has_grader: true
 
 endpoints:
   reset:
