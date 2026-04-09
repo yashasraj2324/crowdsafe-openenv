@@ -71,6 +71,8 @@ class TaskInfo(BaseModel):
     difficulty: str
     description: str
     max_steps: int
+    grader: str
+    has_grader: bool = True
 
 
 class EnvState(BaseModel):

@@ -108,6 +108,12 @@ class TestAllThreeTasks:
         assert "task_02_surge_response" in ids
         assert "task_03_cascade_prevention" in ids
 
+    def test_all_tasks_have_graders(self):
+        tasks = self.env.get_tasks()
+        assert len(tasks) >= 3
+        assert all(task.get("has_grader") is True for task in tasks)
+        assert all(str(task.get("grader", "")).startswith("app.tasks:") for task in tasks)
+
     def test_task_difficulties(self):
         tasks = {t["id"]: t["difficulty"] for t in self.env.get_tasks()}
         assert tasks["task_01_gate_routing"] == "easy"

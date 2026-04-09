@@ -60,8 +60,12 @@ def list_tasks():
 def list_graders():
     return {
         "graders": [
-            {"task_id": task_id, "has_grader": True}
-            for task_id in GRADERS.keys()
+            {
+                "task_id": task_id,
+                "grader": f"app.tasks:{grader_cls.__name__}",
+                "has_grader": True,
+            }
+            for task_id, grader_cls in GRADERS.items()
         ]
     }
 

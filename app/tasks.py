@@ -222,7 +222,7 @@ TASK_METADATA = [
         "id": "task_01_gate_routing",
         "name": "Gate Routing",
         "difficulty": "easy",
-        "grader": "GateRoutingGrader",
+        "grader": "app.tasks:GateRoutingGrader",
         "has_grader": True,
         "description": (
             "Manage gate opening/closing to prevent any sector exceeding safe "
@@ -235,7 +235,7 @@ TASK_METADATA = [
         "id": "task_02_surge_response",
         "name": "Surge Response",
         "difficulty": "medium",
-        "grader": "SurgeResponseGrader",
+        "grader": "app.tasks:SurgeResponseGrader",
         "has_grader": True,
         "description": (
             "A speaker malfunction causes a crowd surge from stage-left at step 20. "
@@ -248,7 +248,7 @@ TASK_METADATA = [
         "id": "task_03_cascade_prevention",
         "name": "Cascade Prevention",
         "difficulty": "hard",
-        "grader": "CascadePreventionGrader",
+        "grader": "app.tasks:CascadePreventionGrader",
         "has_grader": True,
         "description": (
             "Three simultaneous incidents: exit bottleneck, stage surge, and medical panic. "

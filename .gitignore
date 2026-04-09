@@ -7,3 +7,7 @@ dist/
 build/
 .env
 baseline_results.json
+AGENTS.md
+CLAUDE.md
+.qodo/
+.codex/
