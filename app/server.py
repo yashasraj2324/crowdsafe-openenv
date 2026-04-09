@@ -4,6 +4,7 @@ FastAPI server exposing the OpenEnv HTTP interface.
 Endpoints:
   GET  /health        → liveness check
   GET  /tasks         → list all tasks
+  GET  /graders       → list all graders
   POST /reset         → start new episode
   POST /step          → advance one step
   GET  /state         → current internal state
@@ -17,6 +18,7 @@ from pydantic import BaseModel
 
 from app.env import CrowdSafeEnv
 from app.models import Action, Observation, StepResult, EnvState
+from app.tasks import GRADERS
 
 app = FastAPI(
     title="CrowdSafeEnv",
@@ -54,6 +56,16 @@ def list_tasks():
     return {"tasks": _env.get_tasks()}
 
 
+@app.get("/graders")
+def list_graders():
+    return {
+        "graders": [
+            {"task_id": task_id, "has_grader": True}
+            for task_id in GRADERS.keys()
+        ]
+    }
+
+
 @app.post("/reset", response_model=Observation)
 def reset(req: Optional[ResetRequest] = None):
     if req is None:
@@ -84,6 +96,6 @@ def root():
     return {
         "name": "CrowdSafeEnv",
         "description": "OpenEnv crowd safety simulation",
-        "endpoints": ["/health", "/tasks", "/reset", "/step", "/state"],
+        "endpoints": ["/health", "/tasks", "/graders", "/reset", "/step", "/state"],
         "docs": "/docs",
     }
