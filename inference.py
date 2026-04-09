@@ -216,6 +216,7 @@ def make_action(action_dict: Optional[dict]) -> Action:
 def run_task(env: CrowdSafeEnv, task_id: str, seed: int = 42) -> dict:
     """Run one full episode of a task. Returns result dict."""
     log.info(f"Starting task: {task_id}")
+    print(f"[START] task={task_id}", flush=True)
 
     # Find max steps for this task
     max_steps = 100
@@ -249,6 +250,7 @@ def run_task(env: CrowdSafeEnv, task_id: str, seed: int = 42) -> dict:
         done = result.done
         info = result.info
         step_count = step
+        print(f"[STEP] step={step} reward={result.reward:.4f}", flush=True)
 
         if done:
             task_score = info.get("task_score", 0.0)
@@ -265,6 +267,7 @@ def run_task(env: CrowdSafeEnv, task_id: str, seed: int = 42) -> dict:
         log.info(f"  Reached max steps. Score: {task_score:.4f}")
 
     elapsed = time.time() - start_time
+    print(f"[END] task={task_id} score={task_score:.4f} steps={step_count}", flush=True)
 
     return {
         "task_id": task_id,
