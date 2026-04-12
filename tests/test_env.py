@@ -91,15 +91,15 @@ class TestOpenEnvCompliance:
             fresh_env.state()
 
 
-class TestAllThreeTasks:
-    """Verify all 3 tasks are accessible and gradeable."""
+class TestTaskCatalogAndGraders:
+    """Verify 3+ tasks are accessible, enumerable, and gradeable."""
 
     def setup_method(self):
         self.env = CrowdSafeEnv()
 
-    def test_task_list_has_three_tasks(self):
+    def test_task_list_has_three_or_more_tasks(self):
         tasks = self.env.get_tasks()
-        assert len(tasks) == 3
+        assert len(tasks) >= 3
 
     def test_task_ids_correct(self):
         tasks = self.env.get_tasks()
@@ -113,6 +113,13 @@ class TestAllThreeTasks:
         assert len(tasks) >= 3
         assert all(task.get("has_grader") is True for task in tasks)
         assert all(str(task.get("grader", "")).startswith("app.tasks:") for task in tasks)
+
+    def test_task_enumeration_matches_grader_registry(self):
+        tasks = self.env.get_tasks()
+        task_ids = {task["id"] for task in tasks}
+
+        assert task_ids.issuperset(GRADERS.keys())
+        assert all(task["id"] in GRADERS for task in tasks if task.get("has_grader"))
 
     def test_task_difficulties(self):
         tasks = {t["id"]: t["difficulty"] for t in self.env.get_tasks()}
@@ -163,6 +170,39 @@ class TestAllThreeTasks:
         
         score = self.env.grade_episode()
         assert 0.0 <= score <= 1.0, f"Score {score} out of [0.0, 1.0] for {task_id}"
+
+    @pytest.mark.parametrize("task_id", [
+        "task_01_gate_routing",
+        "task_02_surge_response",
+        "task_03_cascade_prevention",
+    ])
+    def test_task_rewards_and_terminal_score_match_declared_ranges(self, task_id):
+        obs = self.env.reset(task_id=task_id, seed=42)
+        assert obs.task_id == task_id
+
+        max_steps = next(t["max_steps"] for t in TASK_METADATA if t["id"] == task_id)
+        final_result = None
+
+        for _ in range(max_steps):
+            action = Action(
+                gate_operations={"gate_A": True, "gate_B": True, "gate_C": True},
+                marshal_deployments=[["marshal_1", 6, 6], ["marshal_2", 2, 2]],
+                pa_broadcast="Please move calmly to exits",
+                emergency_exit_opens=["exit_M"],
+            )
+            result = self.env.step(action)
+            assert -10.0 <= result.reward <= 1.0, (
+                f"Reward {result.reward} out of [-10.0, 1.0] for {task_id}"
+            )
+            final_result = result
+            if result.done:
+                break
+
+        assert final_result is not None
+        assert final_result.done
+        assert "task_score" in final_result.info
+        assert 0.0 <= final_result.info["task_score"] <= 1.0
+        assert 0.0 <= self.env.grade_episode() <= 1.0
 
 
 class TestGraders:
